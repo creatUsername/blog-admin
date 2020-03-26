@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+import routes from './routerMap'
+import MyLayout from './layout/admin'
+import Cookies from 'js-cookie'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <MyLayout>
+        <Switch>
+          {
+            routes.map(route => {
+              return (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  exact={route.exact}
+                  render={routeProps => (
+                    !route.auth
+                      ?
+                      (<route.component {...routeProps} />)
+                      :
+                      (Cookies.get('blog-admin-token') ? <route.component {...routeProps} /> : <Redirect to={{ pathname: '/login', state: { from: routeProps.location } }} />)
+                  )}
+                />
+              )
+            })
+          }
+          <Redirect from="/*" to="/404" />
+        </Switch>
+      </MyLayout>
+    </Router>
+  )
 }
 
-export default App;
+export default App
