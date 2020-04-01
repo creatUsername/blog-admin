@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
 import routes from '../routerMap'
+import { MyHeader } from '../components'
 
 const { Header, Sider, Content } = Layout
 
@@ -74,6 +75,7 @@ const MyLayouts = ({ children, location, history }) => {
               paddingLeft: 10
             }
           })}
+          <MyHeader />
         </Header>
         <Content
           className="layout-main"

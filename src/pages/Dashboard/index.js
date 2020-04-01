@@ -1,18 +1,23 @@
 import React from 'react'
-import Cookies from 'js-cookie'
+// import * as userActions from '../../store/actions/user'
+// import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-const Dashboard = ({ history }) => {
-  const LogOut = () => {
-    Cookies.remove('blog-admin-token')
-    history.push('/login')
-  }
-
+const Dashboard = props => {
+  console.log(props)
   return (
     <div>
-      Dashboard
-      <button onClick={LogOut}>log out</button>
+      Hello { props.user.nickname }
     </div>
   )
 }
 
-export default Dashboard
+const mapStateToProps = state => ({
+  user: state.user.user
+})
+
+const mapDispatchToProps = dispatch => ({
+  // actions: bindActionCreators(userActions, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

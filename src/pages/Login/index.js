@@ -1,38 +1,36 @@
 import React, { useState } from 'react'
 import { Card, Form, Input, Checkbox, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import * as userActions from '../../store/actions/user'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import servicePath from '../../api'
-import axios from 'axios'
-import Cookies from 'js-cookie'
+import Axios from 'axios'
 
 const Login = props => {
   const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('123456')
   const [isLoading, setIsLoading] = useState(false)
 
+  const { actions } = props
+
   const onFinish = values => {
     setIsLoading(() => true)
-    axios({
+    Axios({
       method: 'post',
       url: servicePath.LOGIN,
-      data: {
-        username: values.username,
-        password: values.password
-      }
+      data: { username: values.username, password: values.password }
     }).then(res => {
-      setIsLoading(true)
       if (res.data.code === 200) {
         setIsLoading(false)
-        Cookies.set('blog-admin-token', res.data.token)
+        actions.setUser(res.data)
         message.success(res.data.message)
         let RedirectUrl = props.location.state ? props.location.state.from.pathname : '/'
         props.history.push(RedirectUrl)
       } else {
-        message.error(res.data.message)
         setIsLoading(false)
+        message.error(res.data.message)
       }
-    }).finally(() => {
-      setIsLoading(false)
     })
   }
 
@@ -97,4 +95,12 @@ const Login = props => {
   )
 }
 
-export default Login
+const mapStateToProps = state => ({
+
+})
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(userActions, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

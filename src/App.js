@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import routes from './routerMap'
 import MyLayout from './layout/admin'
-import Cookies from 'js-cookie'
+import { getToken } from './libs/auth'
 
 const App = () => {
   return (
@@ -21,7 +21,7 @@ const App = () => {
                       ?
                       (<route.component {...routeProps} />)
                       :
-                      (Cookies.get('blog-admin-token') ? <route.component {...routeProps} /> : <Redirect to={{ pathname: '/login', state: { from: routeProps.location } }} />)
+                      (getToken() ? <route.component {...routeProps} /> : <Redirect to={{ pathname: '/login', state: { from: routeProps.location } }} />)
                   )}
                 />
               )
